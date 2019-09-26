@@ -1,3 +1,9 @@
 <resources>
 	<string name="app_name">JupyterNotebookReader</string>
+	<string name="listing_py"><![CDATA[
+print("hel    lo")
+a = 5
+if a!=5:
+    print('ohhk')
+]]></string>
 </resources>
