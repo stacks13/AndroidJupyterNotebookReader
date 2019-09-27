@@ -68,8 +68,8 @@ public class NotebookReaderActivity extends AppCompatActivity {
 
 
 	public String JSONFile(Uri uri) throws IOException{
-		File file = new File(uri.getPath());
-		InputStream inputStream = new FileInputStream(file.getAbsoluteFile());
+//		File file = new File(uri.getPath());
+		InputStream inputStream = getContentResolver().openInputStream(uri);
 		byte[] formArray = new byte[inputStream.available()];
 		inputStream.read(formArray);
 		inputStream.close();
