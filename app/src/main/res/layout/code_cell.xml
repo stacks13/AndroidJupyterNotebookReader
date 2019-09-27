@@ -16,6 +16,7 @@
 			android:layout_height="40dp"
 			android:orientation="horizontal"
 			android:padding="4dp"
+			android:background="#bbbbbb"
 			android:weightSum="1">
 
 			<TextView
@@ -38,10 +39,10 @@
 
 		<HorizontalScrollView
 			android:layout_width="match_parent"
-			android:background="#bbbbbb"
+			android:background="#ffffff"
 
 			android:layout_height="wrap_content">
-		<TextView
+		<EditText
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:id="@+id/code"

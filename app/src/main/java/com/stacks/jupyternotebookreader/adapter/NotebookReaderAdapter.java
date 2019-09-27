@@ -23,6 +23,10 @@ public class NotebookReaderAdapter extends RecyclerView.Adapter<NotebookReaderAd
 	private JSONArray dataset;
 	PrettifyHighlighter highlighter = new PrettifyHighlighter();
 
+
+
+
+
 	public NotebookReaderAdapter(JSONArray dataset) {
 		this.dataset = dataset;
 	}
@@ -68,15 +72,74 @@ public class NotebookReaderAdapter extends RecyclerView.Adapter<NotebookReaderAd
 
 	public class ViewHolder extends RecyclerView.ViewHolder{
 
-		TextView codeView;
+		EditText codeView;
 		View output_layout;
 		TextView output;
+		TextWatcher textWatcher = new TextWatcher() {
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+			}
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+				if(timer != null){
+					timer.cancel();
+					timer.start();
+				}
+
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+			}
+		};
+
+
+		CountDownTimer timer = new CountDownTimer(1000, 1000) {
+			@Override
+			public void onTick(long millisUntilFinished) {
+
+			}
+
+			@Override
+			public void onFinish() {
+				if(codeView.getSelectionEnd()-codeView.getSelectionEnd() > 0){
+					return;
+				}
+				try {
+					String highlighted = highlighter.highlight("py", codeView.getText().toString());
+					highlighted = highlighted.replaceAll("\n", "<br>");
+					codeView.removeTextChangedListener(textWatcher);
+					int pt = codeView.getSelectionEnd();
+					codeView.setText(Html.fromHtml(highlighted));
+					codeView.setSelection(pt);
+					codeView.addTextChangedListener(textWatcher);
+				}catch (Exception e){
+					e.printStackTrace();
+					codeView.removeTextChangedListener(textWatcher);
+					codeView.addTextChangedListener(textWatcher);
+				}
+			}
+		};
 
 		public ViewHolder(@NonNull View itemView) {
 			super(itemView);
 			codeView = itemView.findViewById(R.id.code);
 			output = itemView.findViewById(R.id.output);
 			output_layout = itemView.findViewById(R.id.output_layout);
+
+			codeView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+				@Override
+				public void onFocusChange(View view, boolean b) {
+					if(view.isFocused()){
+						codeView.addTextChangedListener(textWatcher);
+					}else{
+						codeView.removeTextChangedListener(textWatcher);
+					}
+				}
+			});
 		}
 	}
 

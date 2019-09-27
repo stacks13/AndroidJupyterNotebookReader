@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.DialogInterface;
 import android.content.res.AssetManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,6 +20,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -32,11 +35,17 @@ public class NotebookReaderActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_notebook_reader);
 
+
+
 		notebookView = findViewById(R.id.notebookView);
 		notebookView.setLayoutManager(new LinearLayoutManager(this));
 		JSONObject file = new JSONObject();
 		try {
-			file = new JSONObject(AssetJSONFile("Test1.ipynb"));
+			if(getIntent().getData() == null){
+				file = new JSONObject(AssetJSONFile("Test1.ipynb"));
+			}else{
+				file = new JSONObject(JSONFile(getIntent().getData()));
+			}
 		} catch (JSONException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -57,6 +66,15 @@ public class NotebookReaderActivity extends AppCompatActivity {
 
 	}
 
+
+	public String JSONFile(Uri uri) throws IOException{
+		File file = new File(uri.getPath());
+		InputStream inputStream = new FileInputStream(file.getAbsoluteFile());
+		byte[] formArray = new byte[inputStream.available()];
+		inputStream.read(formArray);
+		inputStream.close();
+		return new String(formArray);
+	}
 
 	public String AssetJSONFile (String filename) throws IOException {
 		AssetManager manager = getAssets();
