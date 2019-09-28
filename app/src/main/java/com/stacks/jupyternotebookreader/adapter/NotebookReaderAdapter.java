@@ -4,6 +4,7 @@ import android.os.CountDownTimer;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import com.stacks.jupyternotebookreader.PrettifyHighlighter;
 import com.stacks.jupyternotebookreader.R;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class NotebookReaderAdapter extends RecyclerView.Adapter<NotebookReaderAdapter.ViewHolder> {
 
@@ -55,14 +57,40 @@ public class NotebookReaderAdapter extends RecyclerView.Adapter<NotebookReaderAd
 
 		if(output_lines.length() != 0){
 			String output = "";
+
+//			if(output.)
 			for (int i = 0; i < output_lines.length(); i++) {
-				output += output_lines.optString(i);
+				switch(output_lines.optJSONObject(i).optString("output_type")){
+					case "execute_result":
+						JSONObject data = output_lines.optJSONObject(i)
+								.optJSONObject("data");
+						if(data.optJSONArray("text/plain")!=null){
+							JSONArray text = data.optJSONArray("text/plain");
+							for (int j = 0; j < text.length(); j++) {
+								output += text.optString(j);
+							}
+						}
+						output+="\n";
+						break;
+					case "stream":
+						JSONArray text = output_lines.optJSONObject(i)
+								.optJSONArray("text");
+						for (int j = 0; j < text.length(); j++) {
+							output += text.optString(j);
+						}
+						break;
+				}
+
 			}
 			holder.output.setText(output);
+
+			holder.output_layout.setVisibility(View.VISIBLE);
+
 		}else{
 			holder.output_layout.setVisibility(View.GONE);
 		}
 
+		Log.d("Output hidden for", position + " " + holder.output_layout.getVisibility());
 	}
 
 	@Override

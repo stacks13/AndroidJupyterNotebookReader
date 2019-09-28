@@ -42,7 +42,7 @@ public class NotebookReaderActivity extends AppCompatActivity {
 		JSONObject file = new JSONObject();
 		try {
 			if(getIntent().getData() == null){
-				file = new JSONObject(AssetJSONFile("Test1.ipynb"));
+				file = new JSONObject(AssetJSONFile("Test3.ipynb"));
 			}else{
 				file = new JSONObject(JSONFile(getIntent().getData()));
 			}

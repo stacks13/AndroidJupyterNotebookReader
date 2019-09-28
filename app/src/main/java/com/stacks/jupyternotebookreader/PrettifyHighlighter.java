@@ -37,7 +37,7 @@ public class PrettifyHighlighter {
         map.put("lit", "#080");
         map.put("com", "999999");
         map.put("str", "ff0000");
-        map.put("pun", "000");
+        map.put("pun", "AA22FF");
         map.put("pln", "000000");
         return map;
     }
